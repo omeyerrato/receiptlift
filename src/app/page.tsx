@@ -22,22 +22,29 @@ import {
 } from "lucide-react"
 
 export default function Home() {
-  const handleWaitlist = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleWaitlist = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
     const emailInput = form.elements.namedItem("email") as HTMLInputElement
     const email = emailInput?.value
     if (!email) return
     
-    const waitlist = JSON.parse(localStorage.getItem("receiptlift_waitlist") || "[]")
-    if (waitlist.includes(email)) {
-      toast("You're already on the list! We'll be in touch.")
-      return
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast(data.message || "You're on the list! We'll notify you when we launch.")
+        form.reset()
+      } else {
+        toast(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      toast('Could not connect. Please try again.')
     }
-    waitlist.push(email)
-    localStorage.setItem("receiptlift_waitlist", JSON.stringify(waitlist))
-    toast("You're on the list! We'll notify you when we launch.")
-    form.reset()
   }
 
   return (
