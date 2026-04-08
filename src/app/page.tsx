@@ -207,21 +207,28 @@ export default function Home() {
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl font-bold mb-8">Stop drowning in receipt chaos</h2>
-            <div className="space-y-6 text-left">
-              <div className="bg-background rounded-lg p-6 border">
-                <p className="text-lg mb-4">&quot;I&apos;ve been using the shoebox method for years. Anything that gets me organized without learning QuickBooks is worth its weight in gold.&quot;</p>
-                <p className="text-sm text-muted-foreground">— Landscaping business owner, 5 employees</p>
-              </div>
-              <div className="bg-background rounded-lg p-6 border">
-                <p className="text-lg mb-4">&quot;My accountant charges me $200 extra every tax season because of the time she spends organizing my receipts. ReceiptLift would pay for itself in one season.&quot;</p>
-                <p className="text-sm text-muted-foreground">— Solo consultant, service business</p>
-              </div>
-              <div className="bg-background rounded-lg p-6 border">
-                <p className="text-lg mb-4">&quot;I keep receipts in five different places — my wallet, my car, my desk drawer... I need something that just works.&quot;</p>
-                <p className="text-sm text-muted-foreground">— Mobile cleaning service owner</p>
-              </div>
+            <h2 className="text-2xl font-bold mb-8">Sound familiar?</h2>
+            <div className="grid md:grid-cols-3 gap-6 text-left">
+              <Card>
+                <CardContent className="p-6 pt-6">
+                  <p className="text-lg mb-3">&quot;My accountant charges me $200 extra every tax season because of the time she spends organizing my receipts.&quot;</p>
+                  <p className="text-sm text-muted-foreground">Solo consultant, service business</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 pt-6">
+                  <p className="text-lg mb-3">&quot;I keep receipts in five different places — my wallet, my car, my desk drawer... I need something that just works.&quot;</p>
+                  <p className="text-sm text-muted-foreground">Freelance designer, home office</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6 pt-6">
+                  <p className="text-lg mb-3">&quot;Quarterly taxes hit and I spend an entire weekend hunting for receipts across three email accounts and a shoebox.&quot;</p>
+                  <p className="text-sm text-muted-foreground">E-commerce seller, 2全职工作</p>
+                </CardContent>
+              </Card>
             </div>
+            <p className="text-sm text-muted-foreground mt-8">Join hundreds of owner-operators who are done guessing where their receipts went.</p>
           </div>
         </div>
       </section>
