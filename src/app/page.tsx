@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,7 +22,38 @@ import {
   ReceiptIcon
 } from "lucide-react"
 
+const SAMPLE_RECEIPTS = [
+  { vendor: "Office Depot", amount: "$47.82", category: "Office Supplies", date: "Apr 3, 2026" },
+  { vendor: "Shell Gas Station", amount: "$62.40", category: "Transportation", date: "Apr 5, 2026" },
+  { vendor: "Chipotle", amount: "$14.75", category: "Meals & Entertainment", date: "Apr 6, 2026" },
+]
+
 export default function Home() {
+  const [receiptIndex, setReceiptIndex] = useState(0)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const receipt = SAMPLE_RECEIPTS[receiptIndex]
+
+  const handleDemoClick = () => {
+    if (isProcessing) return
+    setIsProcessing(true)
+    setTimeout(() => {
+      setReceiptIndex((receiptIndex + 1) % SAMPLE_RECEIPTS.length)
+      setIsProcessing(false)
+    }, 800)
+  }
+
+  const handleExport = () => {
+    const csv = `Vendor,Amount,Category,Date\n${receipt.vendor},${receipt.amount},${receipt.category},${receipt.date}\n`
+    const blob = new Blob([csv], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `receiptlift-sample.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast("Sample CSV downloaded!")
+  }
+
   const handleWaitlist = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
@@ -105,10 +137,23 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Upload area */}
                   <div className="space-y-4">
-                    <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-emerald-400 transition-colors cursor-pointer">
-                      <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
-                      <p className="font-medium">Drop a receipt image here</p>
-                      <p className="text-sm text-muted-foreground mt-1">or click to browse your files</p>
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-all cursor-pointer ${isProcessing ? "border-amber-400 bg-amber-50 dark:bg-amber-950/20" : "border-muted-foreground/25 hover:border-emerald-400"}`}
+                      onClick={handleDemoClick}
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Clock className="h-10 w-10 mx-auto text-amber-500 mb-3 animate-pulse" />
+                          <p className="font-medium text-amber-700 dark:text-amber-400">Processing...</p>
+                          <p className="text-sm text-muted-foreground mt-1">Reading receipt details</p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+                          <p className="font-medium">Drop a receipt image here</p>
+                          <p className="text-sm text-muted-foreground mt-1">or click to see demo ({receiptIndex + 1}/{SAMPLE_RECEIPTS.length})</p>
+                        </>
+                      )}
                     </div>
                     <p className="text-xs text-muted-foreground text-center">
                       Supports JPG, PNG, PDF · Your data is encrypted and never shared
@@ -124,27 +169,27 @@ export default function Home() {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Vendor:</span>
-                          <span className="font-medium">Office Depot</span>
+                          <span className="font-medium">{receipt.vendor}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Amount:</span>
-                          <span className="font-medium">$47.82</span>
+                          <span className="font-medium">{receipt.amount}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Category:</span>
-                          <Badge variant="secondary" className="text-xs">Office Supplies</Badge>
+                          <Badge variant="secondary" className="text-xs">{receipt.category}</Badge>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Date:</span>
-                          <span className="font-medium">Apr 3, 2026</span>
+                          <span className="font-medium">{receipt.date}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <ReceiptIcon className="h-3 w-3 mr-1" /> Change Category
+                      <Button variant="outline" size="sm" className="flex-1" onClick={() => setReceiptIndex((receiptIndex + 1) % SAMPLE_RECEIPTS.length)}>
+                        <ReceiptIcon className="h-3 w-3 mr-1" /> Next Receipt
                       </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
+                      <Button variant="outline" size="sm" className="flex-1" onClick={handleExport}>
                         <Download className="h-3 w-3 mr-1" /> Export CSV
                       </Button>
                     </div>
